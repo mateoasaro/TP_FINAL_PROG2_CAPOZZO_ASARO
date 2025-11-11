@@ -1,6 +1,7 @@
 import org.json.JSONObject;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Turno {
     private int id;
@@ -8,18 +9,19 @@ public class Turno {
     private Paciente paciente;
     private Profesional profesional;
     private Consultorio consultorio;
-    private Horario fechaYhora;
+    private LocalDateTime fechaYhora;
     private EstadoTurno estadoTurno;
 
-    public Turno(int id, String nombrePaciente, String apellidoPaciente, int dniP, int telefonoP, String obraSocial, String nombreProfesional, String apellidoProfesional, int dniProfesional, int telefonoProfesional, Especialidad especialidad, String matriculaProfesional, Consultorio consultorio, Horario fechaYhora, EstadoTurno estadoTurno) {
+    public Turno( Paciente paciente, Profesional profesional, Consultorio consultorio, LocalDateTime fechaYhora, EstadoTurno estadoTurno) {
         this.id = contador++;
-        paciente = new Paciente(nombrePaciente, apellidoPaciente,dniP,telefonoP,obraSocial);
-        profesional = new Profesional(nombreProfesional,apellidoProfesional,dniProfesional,telefonoProfesional,especialidad,matriculaProfesional);
+        this.paciente = paciente;
+        this.profesional = profesional;
         this.consultorio = consultorio;
         this.fechaYhora = fechaYhora;
         this.estadoTurno = estadoTurno;
     }
-public void cancelarTurno(){
+
+    public void cancelarTurno(){
         setEstadoTurno(EstadoTurno.Cancelado);
 }
 public void turnoFinalizado(){
@@ -32,7 +34,7 @@ public JSONObject toJson(){
         turnoJson.put("paciente",paciente.toJson());
         turnoJson.put("profesional",profesional.toJson());
         turnoJson.put("consultorio",consultorio.toJson());
-        turnoJson.put("inicio",fechaYhora.toJson());
+        turnoJson.put("inicio",fechaYhora);
         turnoJson.put("estadoTurno",estadoTurno);
 
         return turnoJson;
@@ -90,11 +92,11 @@ public JSONObject toJson(){
         this.consultorio = consultorio;
     }
 
-    public Horario getFechaYhora() {
+    public LocalDateTime getFechaYhora() {
         return fechaYhora;
     }
 
-    public void setFechaYhora(Horario fechaYhora) {
+    public void setFechaYhora(LocalDateTime fechaYhora) {
         this.fechaYhora = fechaYhora;
     }
 

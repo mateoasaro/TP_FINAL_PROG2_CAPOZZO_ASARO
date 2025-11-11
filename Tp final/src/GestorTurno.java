@@ -66,6 +66,14 @@ public void verTurnos(){
         }
 }
 
+public Turno buscarTurnoXid(int idBuscado){
+    for (Turno t:turnos){
+        if (t.getId() == idBuscado{
+           return  t;
+        }
+        return null;
+}
+
     public boolean estaOcupado(Profesional prof, Consultorio cons, LocalDateTime inicio) {
 
         final LocalDateTime finSolicitado = inicio.plusMinutes(30);

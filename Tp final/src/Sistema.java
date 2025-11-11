@@ -1,3 +1,6 @@
+import java.time.LocalDateTime;
+import java.util.Scanner;
+
 public class Sistema {
 
     private Scanner scanner;
@@ -44,7 +47,7 @@ public class Sistema {
             System.out.println("1. Ingresar como cliente");
             System.out.println("2. Ingresar como administrador");
             System.out.println("3. Salir del sistema");
-            try {
+
                 int opcion = scanner.nextInt();
 
                 switch (opcion) {
@@ -63,13 +66,10 @@ public class Sistema {
                         break;
 
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Ingrese un número válido");
-                scanner.nextLine();
-            }
+
         }
     }
-}
+
 
 
 
@@ -80,9 +80,9 @@ public class Sistema {
          boolean salir = false;
          while (!salir) {
              System.out.println("Bienvenido, por favor ingrese su DNI: ");
-             try {
+
                  int dni = scanner.nextInt();
-                 paciente = buscarPaciente(dni);
+                 Paciente paciente = buscarPaciente(dni);
 
                  if (paciente != null) {
                      System.out.println("\n¡Bienvenido/a de nuevo, " + paciente.getNombre() + "! 😃");
@@ -99,9 +99,9 @@ public class Sistema {
                      String obraSocial = scanner.nextLine();
 
                      paciente = new Paciente(nombre, apellido, dni, telefono, obraSocial);
-                     agregarPaciente(paciente);
+                     listaPacientes.agregar(paciente);
                  }
-             }
+
          }
      }
 
@@ -123,7 +123,7 @@ public class Sistema {
                              solicitarTurnoPaciente(paciente);
                              break;
                          case 2:
-                             mostrarHistorialTurnos(paciente); // falta hacer el metodo
+                            gestorTurnos.verTurnosXpaciente(paciente.getDni());
                              break;
                          case 3:
                              cancelarTurnoPaciente(paciente); // falta hacer el metodo
@@ -142,7 +142,7 @@ public class Sistema {
 public void solicitarTurnoPaciente(Paciente paciente) {
     System.out.println("Paciente: " + paciente.getNombre() + " " + paciente.getApellido());
 
-    Profesional profesionalElegido = elegirProfesional;
+    Profesional profesionalElegido = elegirProfesional();
     if (profesionalElegido == null) return;
 
     Consultorio consultorioElegido = profesionalElegido.getConsultorioAsignado();
@@ -151,11 +151,11 @@ public void solicitarTurnoPaciente(Paciente paciente) {
         return;
     }
 
-    LocalDateTime inicioTurno = seleccionarHorario(profesionalElegido, consultorioElegido);
+    LocalDateTime inicioTurno = seleccionarHorario();
     if (inicioTurno == null) return;
 
     Turno nuevoTurno = new Turno(paciente, profesionalElegido, consultorioElegido, inicioTurno, EstadoTurno.Pendiente);
-    agregarTurno(nuevoTurno);
+    gestorTurnos.agregarTurno(nuevoTurno);
 
     System.out.println("\n su turno se agendo con existo, datos del turno:");
     System.out.println(nuevoTurno);
@@ -163,18 +163,107 @@ public void solicitarTurnoPaciente(Paciente paciente) {
 
     }
 
-    public void elegirProfesional(){
-    int contadorProfesionales = 1;
-        System.out.println("Ingrese la especialidad en la que desee atenderse");
+    public Especialidad seleccionarEspecialidad() {
+        Especialidad espElegida = null;
+        int opcion;
+        Especialidad[] especialidades = Especialidad.values();
 
-for (int i = 0; i < listaProfesionales.size; i++){
-    if (listaProfesionales.getEspecialidad(i) == especialidad elegida){
-        System.out.println("Profesional N"+contadorProfesionales);
-        contadorProfesionales++;
-}
+        while (espElegida == null) {
+            System.out.println("\n--- 1. Seleccione la Especialidad ---");
+
+            for (int i = 0; i < especialidades.length; i++) {
+
+                System.out.println((i + 1) + ". " + especialidades[i]);
+            }
+
+            System.out.print("Ingrese el número de la especialidad (0 para cancelar): ");
+
+
+                opcion = scanner.nextInt();
+                scanner.nextLine();
+
+                if (opcion == 0) {
+                    return null;
+                }
+
+                if (opcion > 0 && opcion <= especialidades.length) {
+
+                    espElegida = especialidades[opcion - 1];
+                } else {
+                    System.out.println(" Opción inválida. Ingrese un número de la lista.");
+                }
+
+            }
+
+        return espElegida;
     }
 
 
+    public Profesional elegirProfesional() {
+        Profesional profesionalElegido = null;
+        Especialidad espElegida = seleccionarEspecialidad();
+        int opcionProfesional;
+        int contadorProfesionales=0;
+        for (int i = 0; i < listaProfesionales.getElementos().size(); i++) {
+            if (listaProfesionales.getElementos().get(i).getEspecialidad() == espElegida) {
+                System.out.println("Profesional N: " + i);
+                contadorProfesionales = i;
+
+            }
+
+        }
+        System.out.println("ingrese el numero del profesional a elegir (0 para cancelar)");
+        opcionProfesional = scanner.nextInt();
+        scanner.nextLine();
+        if (opcionProfesional == 0) {
+            return null;
+        }
+        if (opcionProfesional > 0 && opcionProfesional <= contadorProfesionales) {
+            profesionalElegido = listaProfesionales.getElementos().get(opcionProfesional - 1);
+        } else {
+            System.out.println("Opcion invalida");
+        }
+        return profesionalElegido;
+    }
+
+    public LocalDateTime seleccionarHorario() {
+        String fechaStr;
+        String horaStr;
+        LocalDateTime fechaHora = null;
+
+        while (fechaHora == null) {
+            System.out.println("\n--- 3. Ingrese Fecha y Hora para el Turno ---");
+            System.out.print("Ingrese la FECHA para el turno (ej: AAAA-MM-DD): ");
+            fechaStr = scanner.nextLine();
+            System.out.print("Ingrese la HORA para el turno (ej: HH:MM): ");
+            horaStr = scanner.nextLine();
+
+                fechaHora = LocalDateTime.parse(fechaStr + "T" + horaStr + ":00");
+
+
+        }
+        return fechaHora;
+    }
+
+    public void cancelarTurnoPaciente(Paciente paciente){
+        int turnoElegido = 0;
+        gestorTurnos.verTurnosXpaciente(paciente.getDni());
+        try{
+            System.out.println("Ingrese el id del turno a cancelar");
+            turnoElegido = scanner.nextInt();
+            if (gestorTurnos.buscarTurnoXid(turnoElegido).getPaciente().getDni() != paciente.getDni()) {
+            }catch (imposibleCancelarTurnoEx e){
+                System.out.println("No se puede cancelar el turno solicitado");
+            }
+            }
+
+            gestorTurnos.cancelarTurno(turnoElegido);
+
+
+    }
+
+
+    }
     //mostrarDisponibilidad()
 
-}
+
