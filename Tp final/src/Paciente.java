@@ -4,10 +4,10 @@ public class Paciente extends Persona{
     private String obraSocial;
     // ESTA LISTA TIENE QUE SER DE TIPO MANEJOLISTAS - private ArrayList<Turno>historialTurnos;
 
-    public Paciente(String nombre, String apellido, int dni, int telefono, String obraSocial, ArrayList<Turno> historialTurnos) {
+    public Paciente(String nombre, String apellido, int dni, int telefono, String obraSocial) {
         super(nombre, apellido, dni, telefono);
         this.obraSocial = obraSocial;
-        this.historialTurnos = historialTurnos;
+         historialTurnos = new ArrayList();
     }
 
     public String getObraSocial() {

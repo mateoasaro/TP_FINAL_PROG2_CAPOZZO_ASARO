@@ -9,7 +9,7 @@ public class Turno {
     private LocalDateTime inicio;
     private EstadoTurno estadoTurno:
 
-    public Turno(int id, Paciente paciente, Profesional profesional, Consultorio consultorio, LocalDateTime inicio, EstadoTurno estadoTurno) {
+    public Turno(int id,String nombrePaciente, String apellidoPaciente, int dniP, int telefonoP, String obraSocial, Profesional profesional, Consultorio consultorio, LocalDateTime inicio, EstadoTurno estadoTurno) {
         this.id = contador++;
         this.paciente = paciente;
         this.profesional = profesional;
