@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
 
 public class Turno {
@@ -7,12 +9,12 @@ public class Turno {
     private Profesional profesional;
     private Consultorio consultorio;
     private LocalDateTime inicio;
-    private EstadoTurno estadoTurno:
+    private EstadoTurno estadoTurno;
 
-    public Turno(int id,String nombrePaciente, String apellidoPaciente, int dniP, int telefonoP, String obraSocial, Profesional profesional, Consultorio consultorio, LocalDateTime inicio, EstadoTurno estadoTurno) {
+    public Turno(int id, String nombrePaciente, String apellidoPaciente, int dniP, int telefonoP, String obraSocial, String nombreProfesional, String apellidoProfesional, int dniProfesional, int telefonoProfesional, Especialidad especialidad, String matriculaProfesional, Consultorio consultorio, LocalDateTime inicio, EstadoTurno estadoTurno) {
         this.id = contador++;
-        this.paciente = paciente;
-        this.profesional = profesional;
+        paciente = new Paciente(nombrePaciente, apellidoPaciente,dniP,telefonoP,obraSocial);
+        profesional = new Profesional(nombreProfesional,apellidoProfesional,dniProfesional,telefonoProfesional,especialidad,matriculaProfesional);
         this.consultorio = consultorio;
         this.inicio = inicio;
         this.estadoTurno = estadoTurno;
@@ -74,31 +76,18 @@ public class Turno {
         this.estadoTurno = estadoTurno;
     }
 
-    public void confirmarTurno(EstadoTurno estadoTurno) {
+    public void confirmarTurno(EstadoTurno estadoTurno) throws ImposibleConfirmarEx{
         if (estadoTurno == EstadoTurno.Cancelado) {
-            //crear excepcion con ese nombre   throw new ImposibleConfirmarEx("No se puede confirmar un turno cancelado.");
+      throw new ImposibleConfirmarEx("No se puede confirmar un turno ya cancelado.");
         }
         setEstadoTurno(EstadoTurno.Confirmado);
     }
-}
+    public JSONObject toJson(){
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("Paciente", paciente);
+        obj.put("Profesional", profesional);
 
-public void cancelarTurno(EstadoTurno estadoTurno) {
-    setEstadoTurno(EstadoTurno.Cancelado);
-}
-
-public void reprogramar(LocalDateTime nuevaFecha) {
-    setInicio(nuevaFecha);
-}
-
-@Override
-public String toString() {
-    return "Turno{" +
-            "id=" + id +
-            ", paciente=" + paciente +
-            ", profesional=" + profesional +
-            ", consultorio=" + consultorio +
-            ", inicio=" + inicio +
-            ", estadoTurno=" + estadoTurno +
-            '}';
-}
+        return obj;
+    }
 }

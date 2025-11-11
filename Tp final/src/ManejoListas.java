@@ -1,3 +1,6 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class ManejoListas <T>{
@@ -21,6 +24,13 @@ public class ManejoListas <T>{
         }
     }
 
+    public JSONObject toJson(){
+        JSONObject elementosJson = new JSONObject();
+
+           elementosJson.put("elemento",elementos);
+
+ return elementosJson;
+    }
 
     public void listar() {
         if (elementos.isEmpty()) {

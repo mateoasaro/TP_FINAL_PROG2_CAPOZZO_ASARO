@@ -1,13 +1,30 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Paciente extends Persona{
     private String obraSocial;
-    // ESTA LISTA TIENE QUE SER DE TIPO MANEJOLISTAS - private ArrayList<Turno>historialTurnos;
+   private ManejoListas<Turno>historialTurnos;
 
     public Paciente(String nombre, String apellido, int dni, int telefono, String obraSocial) {
         super(nombre, apellido, dni, telefono);
         this.obraSocial = obraSocial;
-         historialTurnos = new ArrayList();
+         historialTurnos = new ManejoListas<>();
+    }
+
+    public JSONObject toJson(){
+        JSONObject paciente = new JSONObject();
+        JSONObject persona = super.toJson();
+        paciente.put("persona",persona);
+        paciente.put("obraSocial",obraSocial);
+        JSONArray historialTurnos = new JSONArray();
+        for (Turno t: getHistorialTurnos().getElementos()){
+            historialTurnos.put(t);
+        }
+       paciente.put("historialTurnos",historialTurnos);
+
+return paciente;
     }
 
     public String getObraSocial() {
@@ -18,11 +35,11 @@ public class Paciente extends Persona{
         this.obraSocial = obraSocial;
     }
 
-    public ArrayList<Turno> getHistorialTurnos() {
+    public ManejoListas<Turno> getHistorialTurnos() {
         return historialTurnos;
     }
 
-    public void setHistorialTurnos(ArrayList<Turno> historialTurnos) {
+    public void setHistorialTurnos(ManejoListas<Turno> historialTurnos) {
         this.historialTurnos = historialTurnos;
     }
 

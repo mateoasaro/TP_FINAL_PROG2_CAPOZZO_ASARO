@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 public class Persona {
     private String nombre;
     private String apellido;
@@ -9,6 +11,16 @@ public class Persona {
         this.apellido = apellido;
         this.dni = dni;
         this.telefono = telefono;
+    }
+
+    public JSONObject toJson(){
+        JSONObject persona= new JSONObject();
+        persona.put("nombre",nombre);
+        persona.put("apellido",apellido);
+        persona.put("dni",dni);
+        persona.put("telefono",telefono);
+
+        return persona;
     }
 
     public String getNombre() {
