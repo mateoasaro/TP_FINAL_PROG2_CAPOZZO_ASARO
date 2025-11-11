@@ -8,6 +8,8 @@ public class GestorTurno {
     }
 
     public void agregarTurno(Turno turno){
-        turnos.add(turno)
+        turnos.add(turno);
     }
+
+
 }

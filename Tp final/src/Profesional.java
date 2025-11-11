@@ -22,6 +22,11 @@ public class Profesional extends Persona{
         return profesional;
     }
 
+    @Override
+    public String toString() {
+        return "Profesional [nombre=" + getNombre() + ", apellido=" + getApellido() + ", especialidad=" + especialidad + ", matricula=" + matricula + "]";
+    }
+
     public Especialidad getEspecialidad() {
         return especialidad;
     }

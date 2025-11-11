@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -15,6 +17,15 @@ public class Horario {
         this.dia = dia;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
+    }
+
+    public JSONObject toJson(){
+        JSONObject horario=new JSONObject();
+        horario.put("dia",dia);
+        horario.put("horaInicio",horaInicio);
+        horario.put("horaFin",horaFin);
+
+        return horario;
     }
 
     //CONSTRUCTOR USANDO STRINGS (ejemplo:"09:00")

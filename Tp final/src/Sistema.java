@@ -1,8 +1,15 @@
 public class Sistema {
     private ManejoListas<Consultorio> consultorios;
-    private ManejoListas<String/*clase profesional*/> listaProfesionales;
-    private ManejoListas<String/*clase paciente*/> listaPacientes;
-    // private gestorTurnos gestorTurnos
+    private ManejoListas<Profesional> listaProfesionales;
+    private ManejoListas<Paciente> listaPacientes;
+    private GestorTurno gestorTurnos;
+
+    public Sistema() {
+        this.consultorios = new ManejoListas<Consultorio>();
+        this.listaProfesionales = new ManejoListas<Profesional>();
+        this.listaPacientes = new ManejoListas<Paciente>();
+        this.gestorTurnos = gestorTurnos;
+    }
 
     //iniciar()
 

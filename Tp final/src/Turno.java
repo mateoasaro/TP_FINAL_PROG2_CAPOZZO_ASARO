@@ -19,6 +19,21 @@ public class Turno {
         this.inicio = inicio;
         this.estadoTurno = estadoTurno;
     }
+public void cancelarTurno(){
+        setEstadoTurno(EstadoTurno.Cancelado);
+}
+
+public JSONObject toJson(){
+        JSONObject turnoJson = new JSONObject();
+        turnoJson.put("id",id);
+        turnoJson.put("paciente",paciente.toJson());
+        turnoJson.put("profesional",profesional.toJson());
+        turnoJson.put("consultorio",consultorio.toJson());
+        turnoJson.put("inicio",inicio);
+        turnoJson.put("estadoTurno",estadoTurno);
+
+        return turnoJson;
+}
 
     public int getId() {
         return id;
@@ -82,12 +97,5 @@ public class Turno {
         }
         setEstadoTurno(EstadoTurno.Confirmado);
     }
-    public JSONObject toJson(){
-        JSONObject obj = new JSONObject();
-        obj.put("id", id);
-        obj.put("Paciente", paciente);
-        obj.put("Profesional", profesional);
 
-        return obj;
-    }
 }

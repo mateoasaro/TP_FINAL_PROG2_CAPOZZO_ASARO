@@ -45,7 +45,7 @@ return paciente;
 
     @Override
     public String toString() {
-        return "Paciente{" +
+        return "Paciente{" +super.toString()+
                 "obraSocial='" + obraSocial + '\'' +
                 ", historialTurnos=" + historialTurnos +
                 '}';
