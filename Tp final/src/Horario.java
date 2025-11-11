@@ -19,6 +19,7 @@ public class Horario {
         this.horaFin = horaFin;
     }
 
+
     public JSONObject toJson(){
         JSONObject horario=new JSONObject();
         horario.put("dia",dia);

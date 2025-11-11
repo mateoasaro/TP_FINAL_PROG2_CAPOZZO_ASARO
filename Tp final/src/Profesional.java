@@ -12,6 +12,10 @@ public class Profesional extends Persona{
         this.matricula = matricula;
     }
 
+    public Consultorio getConsultorioAsignado() {
+        return consultorioAsignado;
+    }
+
     public JSONObject toJson(){
         JSONObject profesional= new JSONObject();
       JSONObject persona = super.toJson();

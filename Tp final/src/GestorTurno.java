@@ -65,4 +65,25 @@ public void verTurnos(){
             System.out.println(t.toString());
         }
 }
+
+    public boolean estaOcupado(Profesional prof, Consultorio cons, LocalDateTime inicio) {
+
+        final LocalDateTime finSolicitado = inicio.plusMinutes(30);
+
+        for (Turno t : turnos) {
+
+            boolean coincide = (t.getProfesional().equals(prof) || t.getConsultorio().equals(cons));
+
+            if (coincide) {
+
+                final LocalDateTime inicioExistente = t.getInicio();
+                final LocalDateTime finExistente = inicioExistente.plusMinutes(30);
+                if (inicio.isBefore(finExistente) && finSolicitado.isAfter(inicioExistente)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
 }
