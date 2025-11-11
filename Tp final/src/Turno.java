@@ -8,19 +8,22 @@ public class Turno {
     private Paciente paciente;
     private Profesional profesional;
     private Consultorio consultorio;
-    private LocalDateTime inicio;
+    private Horario fechaYhora;
     private EstadoTurno estadoTurno;
 
-    public Turno(int id, String nombrePaciente, String apellidoPaciente, int dniP, int telefonoP, String obraSocial, String nombreProfesional, String apellidoProfesional, int dniProfesional, int telefonoProfesional, Especialidad especialidad, String matriculaProfesional, Consultorio consultorio, LocalDateTime inicio, EstadoTurno estadoTurno) {
+    public Turno(int id, String nombrePaciente, String apellidoPaciente, int dniP, int telefonoP, String obraSocial, String nombreProfesional, String apellidoProfesional, int dniProfesional, int telefonoProfesional, Especialidad especialidad, String matriculaProfesional, Consultorio consultorio, Horario fechaYhora, EstadoTurno estadoTurno) {
         this.id = contador++;
         paciente = new Paciente(nombrePaciente, apellidoPaciente,dniP,telefonoP,obraSocial);
         profesional = new Profesional(nombreProfesional,apellidoProfesional,dniProfesional,telefonoProfesional,especialidad,matriculaProfesional);
         this.consultorio = consultorio;
-        this.inicio = inicio;
+        this.fechaYhora = fechaYhora;
         this.estadoTurno = estadoTurno;
     }
 public void cancelarTurno(){
         setEstadoTurno(EstadoTurno.Cancelado);
+}
+public void turnoFinalizado(){
+        setEstadoTurno(EstadoTurno.Atendido);
 }
 
 public JSONObject toJson(){
@@ -29,11 +32,23 @@ public JSONObject toJson(){
         turnoJson.put("paciente",paciente.toJson());
         turnoJson.put("profesional",profesional.toJson());
         turnoJson.put("consultorio",consultorio.toJson());
-        turnoJson.put("inicio",inicio);
+        turnoJson.put("inicio",fechaYhora.toJson());
         turnoJson.put("estadoTurno",estadoTurno);
 
         return turnoJson;
 }
+
+    @Override
+    public String toString() {
+        return "Turno{" +
+                "id=" + id +
+                ", paciente=" + paciente.toString() +
+                ", profesional=" + profesional.toString() +
+                ", consultorio=" + consultorio.toString() +
+                ", fechaYhora=" + fechaYhora +
+                ", estadoTurno=" + estadoTurno +
+                '}';
+    }
 
     public int getId() {
         return id;
@@ -75,12 +90,12 @@ public JSONObject toJson(){
         this.consultorio = consultorio;
     }
 
-    public LocalDateTime getInicio() {
-        return inicio;
+    public Horario getFechaYhora() {
+        return fechaYhora;
     }
 
-    public void setInicio(LocalDateTime inicio) {
-        this.inicio = inicio;
+    public void setFechaYhora(Horario fechaYhora) {
+        this.fechaYhora = fechaYhora;
     }
 
     public EstadoTurno getEstadoTurno() {

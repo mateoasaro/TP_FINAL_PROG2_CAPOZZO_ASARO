@@ -13,6 +13,11 @@ public class Paciente extends Persona{
          historialTurnos = new ManejoListas<>();
     }
 
+    public void mostrarHistorial(){
+        System.out.println("Historial de turnos del paciente "+getNombre()+" "+getApellido()+":");
+        historialTurnos.listar();
+    }
+
     public JSONObject toJson(){
         JSONObject paciente = new JSONObject();
         JSONObject persona = super.toJson();
