@@ -108,7 +108,7 @@ public JSONObject toJson(){
         this.estadoTurno = estadoTurno;
     }
 
-    public void confirmarTurno(EstadoTurno estadoTurno) throws ImposibleConfirmarEx{
+    public void confirmarTurno() throws ImposibleConfirmarEx{
         if (estadoTurno == EstadoTurno.Cancelado) {
       throw new ImposibleConfirmarEx("No se puede confirmar un turno ya cancelado.");
         }

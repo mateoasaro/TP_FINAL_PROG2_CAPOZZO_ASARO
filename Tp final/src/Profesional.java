@@ -4,17 +4,14 @@ import java.util.ArrayList;
 
 public class Profesional extends Persona{
     private Especialidad especialidad;
-    private String matricula;
+    private int matricula;
 
-    public Profesional(String nombre, String apellido, int dni, int telefono, Especialidad especialidad, String matricula) {
+    public Profesional(String nombre, String apellido, int dni, int telefono, Especialidad especialidad, int matricula) {
         super(nombre, apellido, dni, telefono);
         this.especialidad = especialidad;
         this.matricula = matricula;
     }
 
-    public Consultorio getConsultorioAsignado() {
-        return consultorioAsignado;
-    }
 
     public JSONObject toJson(){
         JSONObject profesional= new JSONObject();
@@ -39,11 +36,11 @@ public class Profesional extends Persona{
         this.especialidad = especialidad;
     }
 
-    public String getMatricula() {
+    public int getMatricula() {
         return matricula;
     }
 
-    public void setMatricula(String matricula) {
+    public void setMatricula(int matricula) {
         this.matricula = matricula;
     }
 }

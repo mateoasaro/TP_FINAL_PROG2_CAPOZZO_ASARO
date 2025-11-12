@@ -1,4 +1,7 @@
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Sistema {
@@ -59,7 +62,7 @@ public class Sistema {
                         break;
                     case 3:
                         if (gestorTurnos != null) {
-                            gestorTurnos.guardarTurnos();
+                            gestorTurnos.guardarEnArchivo();
                         }
                         System.out.println("Sesion cerrada exitosamente");
                         salir = true;
@@ -73,8 +76,145 @@ public class Sistema {
 
 
 
-    // menu admin()
+    private void menuAdmin() {
+        System.out.println("\n---ACCESO DE ADMINISTRADOR---");
+        System.out.print("Ingrese la contraseña: ");
+        String password = scanner.nextLine();
 
+        if (!password.equals(CONTRASENA_ADMIN)) { // CONTRASENA_ADMIN debe ser "admin123" o similar
+            System.out.println("Acceso denegado. Contraseña incorrecta.");
+            return;
+        }
+
+        boolean volver = false;
+        while (!volver) {
+            System.out.println("\n--- MENÚ ADMINISTRADOR ---");
+            System.out.println("1. Agregar Nuevo Consultorio");
+            System.out.println("2. Mostrar  profesionales registrados");
+            System.out.println("3. Ver Todos los Pacientes Registrados");
+            System.out.println("4. Confirmar Turnos Pendientes (Asignar Horario)");
+            System.out.println("5. Ver Todos los Historiales de Turnos");
+            System.out.println("6. Volver al Menú Principal");
+            System.out.print("Seleccione una opción de gestión: ");
+
+            try {
+                int opcion = scanner.nextInt();
+                scanner.nextLine(); // Consumir salto de línea
+
+                switch (opcion) {
+                    case 1:
+                        agregarConsultorio();
+                        break;
+                    case 2:
+                        listaProfesionales.listar();
+                        break;
+                    case 3:
+                        listaPacientes.listar();
+                        break;
+                    case 4:
+                        confirmarTurnos();
+                        break;
+                    case 5:
+                        verTodosLosHistoriales();
+                        break;
+                    case 6:
+                        volver = true;
+                        // Asegurar que se guarden los cambios antes de salir del admin
+                        if (gestorTurnos != null) {
+                            gestorTurnos.guardarEnArchivo();
+                        }
+                        break;
+                    default:
+                        System.out.println("Opción inválida.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Ingrese un número válido.");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    public void verTodosLosHistoriales(){
+        gestorTurnos.verTurnos();
+    }
+
+    public void confirmarTurnos(){
+        int turnoElegido = 0;
+        gestorTurnos.verTurnos();
+
+            System.out.println("Ingrese el id del turno a confirmar");
+            turnoElegido = scanner.nextInt();
+                gestorTurnos.confirmarTurno(turnoElegido);
+            }
+
+    public Profesional crearProfesional() {
+        System.out.println("\n---AGREGAR NUEVO PROFESIONAL PARA EL CONSULTORIO---");
+
+
+            System.out.print("Nombre: ");
+            String nombre = scanner.nextLine();
+            System.out.print("Apellido: ");
+            String apellido = scanner.nextLine();
+            System.out.print("DNI: ");
+            int dni = scanner.nextInt();
+            System.out.print("Teléfono: ");
+            int telefono = scanner.nextInt();
+            System.out.print("Matrícula: ");
+            int matricula = scanner.nextInt();
+            scanner.nextLine();
+
+
+            Especialidad espElegida = seleccionarEspecialidad();
+            if (espElegida == null) {
+                System.out.println("Operación de agregado de profesional cancelada.");
+
+            }
+
+            Profesional nuevoProfesional = new Profesional(nombre, apellido, dni, telefono, espElegida, matricula);
+
+            listaProfesionales.agregar(nuevoProfesional);
+
+            System.out.println("Profesional " + apellido + " (" + espElegida + ") agregado.");
+            return nuevoProfesional;
+
+    }
+
+    public void agregarConsultorio(){
+            System.out.println("\n---AGREGAR NUEVO CONSULTORIO ---");
+
+            try {
+                System.out.print("Ingrese el nombre del consultorio ");
+                String nombre = scanner.nextLine();
+Profesional nuevo = crearProfesional();
+                Consultorio nuevoConsultorio = new Consultorio(nombre,nuevo);
+
+                System.out.println("agregando horarios por defecto (Lunes a Viernes 08:00-20:00)");
+
+                // Días de Lunes a Viernes
+                DayOfWeek[] diasLaborables = {
+                        DayOfWeek.MONDAY,
+                        DayOfWeek.TUESDAY,
+                        DayOfWeek.WEDNESDAY,
+                        DayOfWeek.THURSDAY,
+                        DayOfWeek.FRIDAY
+                };
+                LocalTime horaApertura = LocalTime.of(8, 0);
+                LocalTime horaCierre = LocalTime.of(20, 0);
+                for (DayOfWeek dia : diasLaborables) {
+                    Horario horarioDia = new Horario(dia, horaApertura, horaCierre);
+                    nuevoConsultorio.getHorarios().add(horarioDia);
+                }
+
+                consultorios.agregar(nuevoConsultorio);
+                System.out.println(" Consultorio '" + nombre + "' agregado y configurado con horario de lunes a viernes de 08:00 a 20:00 .");
+
+
+            } catch (InputMismatchException e) {
+                System.out.println("Error: El ID debe ser un número válido.");
+                scanner.nextLine();
+            }
+
+    }
 // metodos para el cliente
      public void menuCliente() {
          boolean salir = false;
@@ -85,7 +225,7 @@ public class Sistema {
                  Paciente paciente = buscarPaciente(dni);
 
                  if (paciente != null) {
-                     System.out.println("\n¡Bienvenido/a de nuevo, " + paciente.getNombre() + "! 😃");
+                     System.out.println("\n¡Bienvenido/a de nuevo, " + paciente.getNombre() + "!");
                  } else {
 
                      System.out.println("\n--- Para registrarse, ingrese los datos solicitados ---");
@@ -101,7 +241,8 @@ public class Sistema {
                      paciente = new Paciente(nombre, apellido, dni, telefono, obraSocial);
                      listaPacientes.agregar(paciente);
                  }
-
+    menuOpcionesPaciente(paciente);
+                 salir=true;
          }
      }
 
@@ -126,7 +267,7 @@ public class Sistema {
                             gestorTurnos.verTurnosXpaciente(paciente.getDni());
                              break;
                          case 3:
-                             cancelarTurnoPaciente(paciente); // falta hacer el metodo
+                             cancelarTurnoPaciente(paciente);
                              break;
                          case 4:
                              volver = true;
@@ -139,14 +280,23 @@ public class Sistema {
              }
          }
 
+         public Consultorio consultorioElegido(Profesional profesionalResponsable){
+        for (Consultorio c:consultorios.getElementos()){
+            if (c.getProfesional().getMatricula()==profesionalResponsable.getMatricula()){
+                return c;
+            }
+        }
+        return null;
+         }
+
 public void solicitarTurnoPaciente(Paciente paciente) {
     System.out.println("Paciente: " + paciente.getNombre() + " " + paciente.getApellido());
 
     Profesional profesionalElegido = elegirProfesional();
     if (profesionalElegido == null) return;
 
-    Consultorio consultorioElegido = profesionalElegido.getConsultorioAsignado();
-    if (consultorioElegido == null) {
+    Consultorio consultorio = consultorioElegido(profesionalElegido);
+    if (consultorio == null) {
         System.out.println(" El profesional elegido no tiene un consultorio asignado.");
         return;
     }
@@ -154,7 +304,7 @@ public void solicitarTurnoPaciente(Paciente paciente) {
     LocalDateTime inicioTurno = seleccionarHorario();
     if (inicioTurno == null) return;
 
-    Turno nuevoTurno = new Turno(paciente, profesionalElegido, consultorioElegido, inicioTurno, EstadoTurno.Pendiente);
+    Turno nuevoTurno = new Turno(paciente, profesionalElegido, consultorio, inicioTurno, EstadoTurno.Pendiente);
     gestorTurnos.agregarTurno(nuevoTurno);
 
     System.out.println("\n su turno se agendo con existo, datos del turno:");
@@ -248,18 +398,18 @@ public void solicitarTurnoPaciente(Paciente paciente) {
     public void cancelarTurnoPaciente(Paciente paciente){
         int turnoElegido = 0;
         gestorTurnos.verTurnosXpaciente(paciente.getDni());
-        try{
+        try {
             System.out.println("Ingrese el id del turno a cancelar");
             turnoElegido = scanner.nextInt();
             if (gestorTurnos.buscarTurnoXid(turnoElegido).getPaciente().getDni() != paciente.getDni()) {
-            }catch (imposibleCancelarTurnoEx e){
-                System.out.println("No se puede cancelar el turno solicitado");
+                throw new imposibleCancelarTurnoEx("No se puede cancelar ese turno porque corresponde a otro paciente");
+            }else {
+                gestorTurnos.cancelarTurno(turnoElegido);
             }
+        }catch (imposibleCancelarTurnoEx e){
+            System.out.println("No se puede cancelar ese turno porque corresponde a otro paciente, ingrese otro id:");
+            turnoElegido = scanner.nextInt();
             }
-
-            gestorTurnos.cancelarTurno(turnoElegido);
-
-
     }
 
 
