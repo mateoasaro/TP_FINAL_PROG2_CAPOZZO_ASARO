@@ -5,11 +5,13 @@ import java.util.ArrayList;
 public class Profesional extends Persona{
     private Especialidad especialidad;
     private int matricula;
+    private Consultorio consultorioAsignado;
 
     public Profesional(String nombre, String apellido, int dni, int telefono, Especialidad especialidad, int matricula) {
         super(nombre, apellido, dni, telefono);
         this.especialidad = especialidad;
         this.matricula = matricula;
+
     }
 
 

@@ -18,7 +18,8 @@ public class Sistema {
         this.consultorios = new ManejoListas<Consultorio>();
         this.listaProfesionales = new ManejoListas<Profesional>();
         this.listaPacientes = new ManejoListas<Paciente>();
-        this.gestorTurnos = gestorTurnos;
+        this.gestorTurnos = new GestorTurno();
+        this.scanner = new Scanner(System.in);
     }
 
     public Paciente buscarPaciente(int dni) {
@@ -52,6 +53,7 @@ public class Sistema {
             System.out.println("3. Salir del sistema");
 
                 int opcion = scanner.nextInt();
+            scanner.nextLine();
 
                 switch (opcion) {
                     case 1:
@@ -81,7 +83,7 @@ public class Sistema {
         System.out.print("Ingrese la contraseña: ");
         String password = scanner.nextLine();
 
-        if (!password.equals(CONTRASENA_ADMIN)) { // CONTRASENA_ADMIN debe ser "admin123" o similar
+        if (!password.equals(CONTRASENA_ADMIN)) {
             System.out.println("Acceso denegado. Contraseña incorrecta.");
             return;
         }
@@ -190,7 +192,6 @@ Profesional nuevo = crearProfesional();
 
                 System.out.println("agregando horarios por defecto (Lunes a Viernes 08:00-20:00)");
 
-                // Días de Lunes a Viernes
                 DayOfWeek[] diasLaborables = {
                         DayOfWeek.MONDAY,
                         DayOfWeek.TUESDAY,
@@ -222,6 +223,7 @@ Profesional nuevo = crearProfesional();
              System.out.println("Bienvenido, por favor ingrese su DNI: ");
 
                  int dni = scanner.nextInt();
+             scanner.nextLine();
                  Paciente paciente = buscarPaciente(dni);
 
                  if (paciente != null) {
@@ -235,6 +237,7 @@ Profesional nuevo = crearProfesional();
                      String apellido = scanner.nextLine();
                      System.out.println("Ingrese su numero de telefono: (solo numeros) ");
                      int telefono = scanner.nextInt();
+                     scanner.nextLine();
                      System.out.print("Ingrese su Obra Social: ");
                      String obraSocial = scanner.nextLine();
 
@@ -280,10 +283,12 @@ Profesional nuevo = crearProfesional();
              }
          }
 
-         public Consultorio consultorioElegido(Profesional profesionalResponsable){
+         public Consultorio consultorioElegido(int matricula){
         for (Consultorio c:consultorios.getElementos()){
-            if (c.getProfesional().getMatricula()==profesionalResponsable.getMatricula()){
-                return c;
+            if (c.getProfesional() != null) {
+                if (c.getProfesional().getMatricula() == matricula) {
+                    return c;
+                }
             }
         }
         return null;
@@ -295,7 +300,7 @@ public void solicitarTurnoPaciente(Paciente paciente) {
     Profesional profesionalElegido = elegirProfesional();
     if (profesionalElegido == null) return;
 
-    Consultorio consultorio = consultorioElegido(profesionalElegido);
+    Consultorio consultorio = consultorioElegido(profesionalElegido.getMatricula());
     if (consultorio == null) {
         System.out.println(" El profesional elegido no tiene un consultorio asignado.");
         return;
@@ -353,29 +358,30 @@ public void solicitarTurnoPaciente(Paciente paciente) {
         Profesional profesionalElegido = null;
         Especialidad espElegida = seleccionarEspecialidad();
         int opcionProfesional;
-        int contadorProfesionales=0;
+        int contadorProfesionales = 0;
         for (int i = 0; i < listaProfesionales.getElementos().size(); i++) {
             if (listaProfesionales.getElementos().get(i).getEspecialidad() == espElegida) {
-                System.out.println("Profesional N: " + i);
+                System.out.println("Profesional N: " + i + listaProfesionales.getElementos().get(i).toString());
                 contadorProfesionales = i;
 
             }
 
         }
-        System.out.println("ingrese el numero del profesional a elegir (0 para cancelar)");
+        System.out.println("ingrese el numero de matricula del profesional a elegir (0 para cancelar)");
         opcionProfesional = scanner.nextInt();
         scanner.nextLine();
-        if (opcionProfesional == 0) {
-            return null;
-        }
-        if (opcionProfesional > 0 && opcionProfesional <= contadorProfesionales) {
-            profesionalElegido = listaProfesionales.getElementos().get(opcionProfesional - 1);
-        } else {
-            System.out.println("Opcion invalida");
-        }
-        return profesionalElegido;
-    }
 
+        for (int i = 0; i < listaProfesionales.getElementos().size(); i++) {
+            if (listaProfesionales.getElementos().get(i).getEspecialidad() == espElegida) {
+                if (opcionProfesional == listaProfesionales.getElementos().get(i).getMatricula()) {
+                    return listaProfesionales.getElementos().get(i);
+                }
+            } else {
+                System.out.println("Opcion invalida");
+            }
+        }
+        return null;
+    }
     public LocalDateTime seleccionarHorario() {
         String fechaStr;
         String horaStr;
@@ -412,6 +418,15 @@ public void solicitarTurnoPaciente(Paciente paciente) {
             }
     }
 
+    public void agregarProfesional(Profesional neuvo){
+        listaProfesionales.agregar(neuvo);
+    }
+    public void agregarPaciente(Paciente neuvo){
+        listaPacientes.agregar(neuvo);
+    }
+    public void agregarConsultorioXparametro(Consultorio neuvo){
+        consultorios.agregar(neuvo);
+    }
 
     }
     //mostrarDisponibilidad()
